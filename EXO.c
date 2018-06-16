@@ -32,7 +32,7 @@ void Task_Dispatcher () // Task sequence => cfrs, hsfods, cfrs, mlmc, cfrs, hsfo
 {
     Timer_Init(); // Timer reinitialization
 
-    switch(Time) {
+    switch(Time) { // Since each task takes max. 90us to finish, and there is only one task per interrupt (100us), there shouldn't be any overlap
         case 1:
         case 3:
             cfrs(); // First task
