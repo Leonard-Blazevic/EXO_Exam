@@ -35,22 +35,22 @@ void Task_Dispatcher () // Task sequence => cfrs, hsfods, cfrs, EMPTY, cfrs, hsf
 {
     Timer_Init(); // Timer reinitialization
 
-    switch(Time) { // Since each task takes max. 90us to finish, and there is only one task per interrupt (100us), there shouldn't be any overlap
-        case 1:
-        case 3:
-            cfrs(); // First task
-            break;
-        case 2:
-            hsfods(); // Second task
-            break;
-        case 4:
+    // Since each task takes max. 90us to finish, and there is only one task per interrupt (100us), there shouldn't be any overlap
+
+    if(Time % 2 == 1){// Executes the first task every other interrupt => when the value of Time is an odd number
+        cfrs(); // First task
+    }
+    else{// Executes the second and third tasks every 4. interrupt (if the condition is met for the mlmc) => mlmc when time is a multiple of 4
+        if(Time % 4 == 0){
             if (run_mlmc == 1) // Execute?
                 mlmc(); // Third task
             
             run_mlmc = run_mlmc == 0 ? 1 : 0; // Invert the value of the flag
-            Time = 0; // Starting the sequence again
-            break;
-    }  
+        }
+        else{
+            hsfods(); // Second task
+        }
+    }
 }
 
 int Main () // The program starts here
